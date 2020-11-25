@@ -16,7 +16,7 @@
 </head>
 
 <body class="gray-bg">
-
+    @include('layouts.partials.flash')
     @yield('content')
 
 </body>
