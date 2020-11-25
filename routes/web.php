@@ -20,3 +20,14 @@ Route::get('/', function () {
 Route::get('/news', function () {
 
 })->name('home')->middleware('auth');
+
+Route::group([
+    'prefix' => 'company',
+    'as' => 'company.',
+    'middleware' => 'auth',
+], function () {
+    Route::get('/', [\App\Http\Controllers\CompanyController::class, 'index'])->name('index');
+    Route::get('/add', [\App\Http\Controllers\CompanyController::class, 'create'])->name('create');
+    Route::post('/', [\App\Http\Controllers\CompanyController::class, 'store'])->name('store');
+    Route::get('/{company}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('show');
+});
