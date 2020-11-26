@@ -1,5 +1,8 @@
 @extends('layouts.inner')
 
+@section('title', 'Предприятия')
+@section('headline', 'Предприятия')
+
 @section('content_inner')
 <div class="row">
     <div class="col-lg-12">

@@ -1,5 +1,8 @@
 @extends('layouts.inner')
 
+@section('title', 'Предприятия - ' . $company->name)
+@section('headline', $company->name)
+
 @section('content_inner')
     <div class="row">
 

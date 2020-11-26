@@ -32,8 +32,8 @@
             </li>
 
             <!-- меню -->
-
-            <li class="navbar-default"><a href=""><i class="fa fa-list"></i> <span class="nav-label">$sd->name</span></a></li>
+            <li class="navbar-default"><a href="{{ route('home') }}"><i class="fa fa-newspaper-o"></i> <span class="nav-label">Новости</span></a></li>
+            <li class="navbar-default"><a href="{{ route('company.index') }}"><i class="fa fa-building-o"></i> <span class="nav-label">Предприятия</span></a></li>
 
 
             <li class="navbar-default"><a href="/bids/"><i class="fa fa-list"></i> <span class="nav-label">Логи ставок (видит админ)</span></a></li>
@@ -78,8 +78,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Заголовок</h2>
-        крошки
+        <h2>@yield('headline')</h2>
     </div>
     <div class="col-lg-2">
 

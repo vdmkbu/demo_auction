@@ -1,5 +1,8 @@
 @extends('layouts.inner')
 
+@section('title', 'Предприятия')
+@section('headline', $method == 'put' ? 'Редактировать предприятие' : 'Добавить предприятие')
+
 @section('content_inner')
 <form enctype='multipart/form-data' method='post' action='{{ $method == 'post' ? route('company.store') : route('company.update', $company)}}'>
     @csrf
