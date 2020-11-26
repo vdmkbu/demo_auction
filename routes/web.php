@@ -33,3 +33,14 @@ Route::group([
     Route::get('/{company}/edit', [\App\Http\Controllers\CompanyController::class, 'edit'])->name('edit');
     Route::put('/{company}', [\App\Http\Controllers\CompanyController::class, 'update'])->name('update');
 });
+
+
+Route::group([
+   'prefix' => 'admin',
+   'as' => 'admin.',
+   'middleware' => 'can:admin_panel',
+   'namespace' => 'Admin'
+], function () {
+    Route::get('/', [\App\Http\Controllers\Admin\HomeController::class, 'index'])->name('index');
+});
+
