@@ -30,4 +30,6 @@ Route::group([
     Route::get('/add', [\App\Http\Controllers\CompanyController::class, 'create'])->name('create');
     Route::post('/', [\App\Http\Controllers\CompanyController::class, 'store'])->name('store');
     Route::get('/{company}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('show');
+    Route::get('/{company}/edit', [\App\Http\Controllers\CompanyController::class, 'edit'])->name('edit');
+    Route::put('/{company}', [\App\Http\Controllers\CompanyController::class, 'update'])->name('update');
 });
