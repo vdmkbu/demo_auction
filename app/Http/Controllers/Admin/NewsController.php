@@ -11,7 +11,7 @@ class NewsController extends Controller
 {
     public function index()
     {
-        $news = Post::all();
+        $news = Post::orderByDate()->get();
         return view('admin.news.index', compact('news'));
     }
 
