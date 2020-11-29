@@ -9,6 +9,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        dd('admin');
+        return view('admin.index');
     }
 }

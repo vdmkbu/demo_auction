@@ -26,6 +26,9 @@
 
     <link href="{{ asset('css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css') }}" rel="stylesheet">
 
+    <!-- подключаем стили Summernote -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.7/summernote.css" rel="stylesheet">
+
 
 </head>
 
@@ -101,5 +104,19 @@
 
 <!-- Custom and plugin javascript -->
 <script src="/js/inspinia.js?<?=filemtime($_SERVER['DOCUMENT_ROOT'].'/js/inspinia.js')?>"></script>
+
+<!-- подключаем сам summernote -->
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.7/summernote.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+
+        $('#text').summernote();
+
+    });
+
+</script>
 </body>
 </html>

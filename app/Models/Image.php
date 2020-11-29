@@ -9,8 +9,14 @@ class Image extends Model
 {
     use HasFactory;
 
-    public function news()
+    protected $fillable = [
+        'path'
+    ];
+
+    protected $table = 'images';
+
+    public function post()
     {
-        return $this->belongsTo(News::class);
+        return $this->belongsTo(Post::class);
     }
 }
