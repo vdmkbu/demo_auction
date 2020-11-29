@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Brand;
 use App\Models\Image;
 use App\Models\Post;
-use App\Models\Product;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller

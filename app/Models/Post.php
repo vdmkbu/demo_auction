@@ -20,4 +20,9 @@ class Post extends Model
     {
         return $this->hasMany(Image::class);
     }
+
+    public function scopeOrderByDate($query)
+    {
+        return $query->orderBy('date', 'desc');
+    }
 }

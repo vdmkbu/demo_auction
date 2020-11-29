@@ -17,9 +17,6 @@ Route::get('/', function () {
     return redirect(route('home'));
 })->middleware('auth');
 
-Route::get('/news', function () {
-
-})->name('home')->middleware('auth');
 
 Route::group([
     'prefix' => 'company',
@@ -33,6 +30,8 @@ Route::group([
     Route::get('/{company}/edit', [\App\Http\Controllers\CompanyController::class, 'edit'])->name('edit');
     Route::put('/{company}', [\App\Http\Controllers\CompanyController::class, 'update'])->name('update');
 });
+
+Route::get('/news', \App\Http\Controllers\NewsController::class)->name('home')->middleware('auth');
 
 
 Route::group([
