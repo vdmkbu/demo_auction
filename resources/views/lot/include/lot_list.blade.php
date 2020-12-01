@@ -1,3 +1,4 @@
+@if($lots->count())
 <div class="panel-body">
 
     <div class="ibox-content">
@@ -65,4 +66,4 @@
     </div>
 
 </div>
-
+@endif
