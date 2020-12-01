@@ -1,34 +1,328 @@
 /*
  *
  *   INSPINIA - Responsive Admin Theme
- *   version 2.8
+ *   version 2.7
  *
  */
 
+$(document).ready(function(){
+    $('.dataTables-example').DataTable({
+
+        pageLength: 25,
+        responsive: true,
+        dom: '<"html5buttons"B>lTfgitp',
+        language: {
+            url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Russian.json"
+        },
+        buttons: [
+            {extend: 'csv'},
+            {extend: 'excel', title: 'ExampleFile'},
+            {extend: 'pdf', title: 'ExampleFile'},
+
+            {extend: 'print',
+                text: 'Печать',
+                customize: function (win){
+                    $(win.document.body).addClass('white-bg');
+                    $(win.document.body).css('font-size', '10px');
+
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', 'inherit');
+                }
+            }
+        ]
+
+    });
+
+});
+
 $(document).ready(function () {
 
-    // Fast fix bor position issue with Propper.js
-    // Will be fixed in Bootstrap 4.1 - https://github.com/twbs/bootstrap/pull/24092
-    Popper.Defaults.modifiers.computeStyle.gpuAcceleration = false;
+    // установим комиссию по умолчанию для всех лотов; не можем этого сделать из php, т.к там считается от суммы f_Sum, что при покупки части не может обработаться
+    // пройдем по всем полям "Хочу купить часть"
+    if($('.set_part_bid').length) {
 
+        $(".set_part_bid").each(function(i, el) {
+
+            var sum = $(el).val();
+            var lot_id = $(el).data('lot');
+
+
+            // получим ставку по умолчанию из поля .set_bid в модальном окне
+            var next_fee = $(".set_bid[data-lot='"+lot_id+"']").val();
+
+            // посчитаем комиссию
+            var comission = (sum/100)*next_fee;
+            $('#fee_value_'+lot_id+'').html(comission);
+
+        });
+    }
+
+
+    // кнопка "применить" - ставим ставку
+    $('.ajax_form').each(function() {
+
+        var owner = this;
+
+        $(this).submit(function(e) {
+
+            e.preventDefault();
+
+
+
+            var fields = $(this).serialize();
+            $.ajax({
+                url:this.action+'?isNaked=1',
+                type: this.method,
+                data: fields,
+                always: function(data) {
+
+                },
+                success: function(data) {
+                    $(owner).remove();
+                    $('#set_bid_'+$(owner).data('id')).hide();
+                    $('.modal-body').html(data);
+                    window.location.reload();
+                }
+            });
+
+
+
+        });
+
+
+
+    });
+
+    // переключение ставки в модальном окне
+    $('.set_bid').bind("change paste keyup", function(){
+        var bid = Number($(this).val());
+
+        var lot_id = $(this).data('lot');
+
+        var max = Number($(this).attr('max'));
+        var min = Number($(this).attr('min'));
+
+
+        if(bid < min) {
+            $(this).val(min);
+        }
+
+        if(bid > max) {
+            $(this).val(max);
+        }
+
+        var sum = $(this).data('sum');
+        var comission = (sum/100)*bid;
+
+        if(comission) {
+            $('#fee_value_'+lot_id+'').html(comission);
+        }
+
+    });
+
+    // изменение поля хочу купить часть
+    $('.set_part_bid').bind("change paste keyup", function() {
+
+        var bid = Number($(this).val());
+
+
+        // получим id лота, чтобы связаться с модальной формой
+        var lot_id = $(this).data('lot');
+
+
+        // ВАЛИДАЦИЯ
+
+        var max = Number($(this).attr('max'));
+        var min = Number($(this).attr('min'));
+
+
+        if(bid < min) {
+            $(this).val(min);
+        }
+
+        if(bid > max) {
+            $(this).val(max);
+        }
+
+        // копируем значение "хочу купить часть" в модальную форму в атрибут data-sum: используется при переключении +\- значения ставки
+        $('#myModal_'+lot_id+'').find('.set_bid').data("sum", bid);
+
+
+        // получим ставку по умолчанию из поля .set_bid в модальном окне
+        var next_fee = $(".set_bid[data-lot='"+lot_id+"']").val();
+
+        // посчитаем комиссию
+        var comission = (bid/100)*next_fee;
+
+        // обновим комиссию
+        $('#fee_value_'+lot_id+'').html(comission);
+
+    });
+
+
+    // close lot
+    $('.close_lot').click(function(e){
+        e.preventDefault();
+
+        var message = $(this).data('message');
+
+        if(confirm("Принять ставку и закрыть лот?")) {
+
+            $.ajax({
+                url: "/netcat/modules/default/actions/close_lot.php",
+                method: "POST",
+                data: {"message":message},
+                success: function(data) {
+                    if(data) {
+                        alert("Ставка принята, лот закрыт");
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    });
+
+    // delete lot
+    $('.delete_lot').click(function(e) {
+        e.preventDefault();
+
+        var source = $(this).data('source');
+
+        if(confirm("Удалить лот?")) {
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: source,
+                type: "DELETE",
+                success: function(data) {
+                    if(data) {
+                        alert("Лот удален");
+                        window.location.reload();
+                    }
+                }
+            });
+        }
+    });
+
+    // delete enterprice
+    $('.delete_enterprice').click(function(e) {
+        e.preventDefault();
+
+        var message = $(this).data('message');
+
+        if(confirm("Удалить предприятие?")) {
+            $.ajax({
+                url: "/netcat/modules/default/actions/d_enter.php",
+                method: "POST",
+                data: {"message":message},
+                success: function(data) {
+                    if(data) {
+                        alert("Предприятие удалено");
+                        window.location.href = '/enterprice/';
+                    }
+                }
+            });
+        }
+
+    });
+
+    // calc NDS
+
+    $('.lot_sum').bind("change paste keyup", function(){
+
+        var sum = $(this).val();
+        var nds = $('.lot_nds:checked').data('value');
+        var max = $(this).attr('max');
+
+
+
+        if(Number(sum) > Number(max)) {
+            this.value = Number(max);
+        }
+
+        if (this.value.match(/[,]/g)) {
+            this.value = this.value.replace(/[,]/g, '.');
+        }
+
+        if (this.value.match(/[^0-9.]/g)) {
+            this.value = this.value.replace(/[^0-9.]/g, '');
+        }
+
+        var nds_sum = sum*(nds/100);
+        if(!isNaN(nds_sum)) {
+            nds_sum = nds_sum.toFixed(2);
+            $('#nds_calc').html(nds_sum);
+        }
+    });
+
+
+    $('.fee').bind("change paste keyup", function(){
+        var val = $(this).val();
+        var max = $(this).attr('max');
+        var min = $(this).attr('min');
+
+
+        if(Number(val) > Number(max)) {
+            this.value = Number(max);
+        }
+
+        if(Number(val) < Number(min)) {
+            this.value = Number(min);
+        }
+    });
+
+    //var hckValue = $('SELECTOR').iCheck('update')[0].checked;
+    // https://github.com/fronteed/iCheck#callbacks
+    //$('input').on('ifChecked', function(event){alert(event.type + ' callback');});
+    $('.i-checks-nds').on('ifChanged', function(event) {
+
+
+        var checked = event.target.checked;
+        var value = event.target.value;
+
+        if(checked) {
+            var nds = $(event.target).data('value');
+            var sum = $('.lot_sum').val();
+            var nds_sum = sum*(nds/100);
+            if(!isNaN(nds_sum)) {
+                nds_sum = nds_sum.toFixed(2);
+                $('#nds_calc').html(nds_sum);
+            }
+        }
+    });
+
+    // включение/отключение лота
+    $('.i-checks-checked').on('ifChanged', function(event) {
+        var checked = event.target.checked;
+        var value = event.target.value;
+
+        if(checked) {
+            var message = $(event.target).data('message');
+
+            $.get('/lots/checked_loty_'+message+'.html?isNaked=1',{},function(data){
+                $('#lot_check_status').html(data);
+            });
+
+        }
+    });
+
+    // mask phone
+    $('.phone_mask').mask("+79999999999");
 
     // Add body-small class if window less than 768px
-    if ($(window).width() < 769) {
+    if ($(this).width() < 769) {
         $('body').addClass('body-small')
     } else {
         $('body').removeClass('body-small')
     }
 
     // MetisMenu
-    var sideMenu = $('#side-menu').metisMenu();
-
-    sideMenu.on('shown.metisMenu', function (e) {
-        fix_height();
-    });
+    $('#side-menu').metisMenu();
 
     // Collapse ibox function
-    $('.collapse-link').on('click', function (e) {
-        e.preventDefault();
+    $('.collapse-link').on('click', function () {
         var ibox = $(this).closest('div.ibox');
         var button = $(this).find('i');
         var content = ibox.children('.ibox-content');
@@ -42,15 +336,13 @@ $(document).ready(function () {
     });
 
     // Close ibox function
-    $('.close-link').on('click', function (e) {
-        e.preventDefault();
+    $('.close-link').on('click', function () {
         var content = $(this).closest('div.ibox');
         content.remove();
     });
 
     // Fullscreen ibox function
-    $('.fullscreen-link').on('click', function (e) {
-        e.preventDefault();
+    $('.fullscreen-link').on('click', function () {
         var ibox = $(this).closest('div.ibox');
         var button = $(this).find('i');
         $('body').toggleClass('fullscreen-ibox-mode');
@@ -62,8 +354,7 @@ $(document).ready(function () {
     });
 
     // Close menu in canvas mode
-    $('.close-canvas-menu').on('click', function (e) {
-        e.preventDefault();
+    $('.close-canvas-menu').on('click', function () {
         $("body").toggleClass("mini-navbar");
         SmoothlyMenu();
     });
@@ -75,8 +366,7 @@ $(document).ready(function () {
     });
 
     // Open close right sidebar
-    $('.right-sidebar-toggle').on('click', function (e) {
-        e.preventDefault();
+    $('.right-sidebar-toggle').on('click', function () {
         $('#right-sidebar').toggleClass('sidebar-open');
     });
 
@@ -88,9 +378,8 @@ $(document).ready(function () {
     });
 
     // Open close small chat
-    $('.open-small-chat').on('click', function (e) {
-        e.preventDefault();
-        $(this).children().toggleClass('fa-comments').toggleClass('fa-times');
+    $('.open-small-chat').on('click', function () {
+        $(this).children().toggleClass('fa-comments').toggleClass('fa-remove');
         $('.small-chat-box').toggleClass('active');
     });
 
@@ -109,16 +398,10 @@ $(document).ready(function () {
         return false;
     });
 
-    // Append config box / Only for demo purpose
-    // Uncomment on server mode to enable XHR calls
-    //$.get("skin-config.html", function (data) {
-    //    if (!$('body').hasClass('no-skin-config'))
-    //        $('body').append(data);
-    //});
+
 
     // Minimalize menu
-    $('.navbar-minimalize').on('click', function (event) {
-        event.preventDefault();
+    $('.navbar-minimalize').on('click', function () {
         $("body").toggleClass("mini-navbar");
         SmoothlyMenu();
 
@@ -131,12 +414,56 @@ $(document).ready(function () {
     });
 
 
+    // Full height of sidebar
+    function fix_height() {
+        var heightWithoutNavbar = $("body > #wrapper").height() - 61;
+        $(".sidebar-panel").css("min-height", heightWithoutNavbar + "px");
+
+        var navbarheight = $('nav.navbar-default').height();
+        var wrapperHeight = $('#page-wrapper').height();
+
+        if (navbarheight > wrapperHeight) {
+            $('#page-wrapper').css("min-height", navbarheight + "px");
+        }
+
+        if (navbarheight < wrapperHeight) {
+            $('#page-wrapper').css("min-height", $(window).height() + "px");
+        }
+
+        if ($('body').hasClass('fixed-nav')) {
+            if (navbarheight > wrapperHeight) {
+                $('#page-wrapper').css("min-height", navbarheight + "px");
+            } else {
+                $('#page-wrapper').css("min-height", $(window).height() - 60 + "px");
+            }
+        }
+
+    }
+
+    fix_height();
+
+    // Fixed Sidebar
+    $(window).bind("load", function () {
+        if ($("body").hasClass('fixed-sidebar')) {
+            $('.sidebar-collapse').slimScroll({
+                height: '100%',
+                railOpacity: 0.9
+            });
+        }
+    });
+
     // Move right sidebar top after scroll
     $(window).scroll(function () {
         if ($(window).scrollTop() > 0 && !$('body').hasClass('fixed-nav')) {
             $('#right-sidebar').addClass('sidebar-top');
         } else {
             $('#right-sidebar').removeClass('sidebar-top');
+        }
+    });
+
+    $(window).bind("load resize scroll", function () {
+        if (!$("body").hasClass('body-small')) {
+            fix_height();
         }
     });
 
@@ -149,53 +476,6 @@ $(document).ready(function () {
     })
 });
 
-
-
-// Fixed Sidebar
-$(window).bind("load", function () {
-    if ($("body").hasClass('fixed-sidebar')) {
-        $('.sidebar-collapse').slimScroll({
-            height: '100%',
-            railOpacity: 0.9
-        });
-    }
-});
-
-function fix_height() {
-    var heightWithoutNavbar = $("body > #wrapper").height() - 62;
-    $(".sidebar-panel").css("min-height", heightWithoutNavbar + "px");
-
-    var navbarheight = $('nav.navbar-default').height();
-    var wrapperHeight = $('#page-wrapper').height();
-
-    if (navbarheight > wrapperHeight) {
-        $('#page-wrapper').css("min-height", navbarheight + "px");
-    }
-
-    if (navbarheight < wrapperHeight) {
-        $('#page-wrapper').css("min-height", $(window).height() + "px");
-    }
-
-    if ($('body').hasClass('fixed-nav')) {
-        if (navbarheight > wrapperHeight) {
-            $('#page-wrapper').css("min-height", navbarheight + "px");
-        } else {
-            $('#page-wrapper').css("min-height", $(window).height() - 60 + "px");
-        }
-    }
-
-}
-
-$(window).bind("load resize scroll", function () {
-
-    // Full height of sidebar
-    setTimeout(function(){
-        if (!$("body").hasClass('body-small')) {
-            fix_height();
-        }
-    })
-
-});
 
 // Minimalize menu when screen is less than 768px
 $(window).bind("resize", function () {
@@ -311,5 +591,3 @@ function WinMove() {
         })
         .disableSelection();
 }
-
-

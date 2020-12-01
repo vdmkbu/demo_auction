@@ -33,6 +33,18 @@ Route::group([
 
 Route::get('/news', \App\Http\Controllers\NewsController::class)->name('home')->middleware('auth');
 
+Route::group([
+    'prefix' => 'lots',
+    'as' => 'lot.',
+    'middleware' => 'auth',
+], function () {
+    Route::get('/', [\App\Http\Controllers\LotController::class, 'index'])->name('index');
+    Route::get('/add', [\App\Http\Controllers\LotController::class, 'create'])->name('create');
+    Route::post('/', [\App\Http\Controllers\LotController::class, 'store'])->name('store');
+    Route::get('/{lot}/edit', [\App\Http\Controllers\LotController::class, 'edit'])->name('edit');
+    Route::put('/{lot}', [\App\Http\Controllers\LotController::class, 'update'])->name('update');
+    Route::delete('/{lot}', [\App\Http\Controllers\LotController::class, 'destroy'])->name('delete');
+});
 
 Route::group([
    'prefix' => 'admin',
