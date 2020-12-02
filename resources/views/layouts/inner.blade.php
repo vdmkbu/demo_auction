@@ -36,9 +36,9 @@
             <li class="navbar-default"><a href="{{ route('company.index') }}"><i class="fa fa-building-o"></i> <span class="nav-label">Предприятия</span></a></li>
             <li class="navbar-default"><a href="{{ route('lot.index') }}"><i class="fa fa-building-o"></i> <span class="nav-label">Мои лоты</span></a></li>
 
-
-            <li class="navbar-default"><a href="/bids/"><i class="fa fa-list"></i> <span class="nav-label">Логи ставок (видит админ)</span></a></li>
-
+            @can('admin_panel')
+            <li class="navbar-default"><a href="{{ route('admin.index') }}"><i class="fa fa-list"></i> <span class="nav-label">Admin</span></a></li>
+            @endcan
 
         </ul>
 
