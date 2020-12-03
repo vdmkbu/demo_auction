@@ -91,7 +91,6 @@ class CompanyController extends Controller
 
     public function show(Company $company)
     {
-
         if (Gate::denies('company_owner', $company->user_id)) {
             abort(403, 'Access denied');
         }
@@ -159,6 +158,18 @@ class CompanyController extends Controller
             return redirect(route('company.index'))->with('error', 'При обработке произошла ошибка');
         }
 
+    }
+
+    public function destroy(Company $company)
+    {
+        if (Gate::denies('company_owner', $company->user_id)) {
+            abort(403, 'Access denied');
+        }
+
+        Storage::delete($company->file);
+        $company->delete();
+
+        return redirect(route('company.index'))->with('success', 'Предприятие удалено');
     }
 
 }

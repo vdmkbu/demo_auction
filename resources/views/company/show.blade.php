@@ -18,11 +18,17 @@
                             <button type="button" class="btn btn-default btn-xs"><a target="_blank" href="{{ $download_link }}">скачать выписку</a> </button>
                             <button type="button" class="btn btn-default btn-xs"><a href=" {{ route('company.edit', $company->id) }}">обновить выписку</a> </button>
 
-                        проверим, есть ли у предприятия лоты. если есть, то удалить нельзя
 
-                        <button data-haslots="" type="button" data-message="" class="btn btn-danger btn-xs delete_enterprice">
-                            <a target="_blank" style="color: white" href="#">удалить предприятие</a>
-                        </button>
+
+                        @if(!$company->lots()->exists())
+                            <form method="POST" action="{{ route('company.destroy', $company->id) }}" style="display: inline-block">
+                            @csrf
+                                @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-xs">
+                                удалить предприятие
+                            </button>
+                        </form>
+                        @endif
 
                         </span>
                 </div>

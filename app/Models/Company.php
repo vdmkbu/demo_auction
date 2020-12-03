@@ -22,4 +22,9 @@ class Company extends Model
     {
         $query->where('user_id', $user_id);
     }
+
+    public function lots()
+    {
+        return $this->hasMany(Lot::class);
+    }
 }

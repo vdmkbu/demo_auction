@@ -29,6 +29,7 @@ Route::group([
     Route::get('/{company}', [\App\Http\Controllers\CompanyController::class, 'show'])->name('show');
     Route::get('/{company}/edit', [\App\Http\Controllers\CompanyController::class, 'edit'])->name('edit');
     Route::put('/{company}', [\App\Http\Controllers\CompanyController::class, 'update'])->name('update');
+    Route::delete('/{company}', [\App\Http\Controllers\CompanyController::class, 'destroy'])->name('destroy');
 });
 
 Route::get('/news', \App\Http\Controllers\NewsController::class)->name('home')->middleware('auth');
