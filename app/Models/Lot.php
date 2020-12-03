@@ -36,4 +36,9 @@ class Lot extends Model
     {
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
+
+    public function bids()
+    {
+        return $this->hasMany(Bid::class);
+    }
 }

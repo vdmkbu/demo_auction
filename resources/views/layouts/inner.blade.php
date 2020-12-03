@@ -34,7 +34,9 @@
             <!-- меню -->
             <li class="navbar-default"><a href="{{ route('home') }}"><i class="fa fa-newspaper-o"></i> <span class="nav-label">Новости</span></a></li>
             <li class="navbar-default"><a href="{{ route('company.index') }}"><i class="fa fa-building-o"></i> <span class="nav-label">Предприятия</span></a></li>
-            <li class="navbar-default"><a href="{{ route('lot.index') }}"><i class="fa fa-building-o"></i> <span class="nav-label">Мои лоты</span></a></li>
+            <li class="navbar-default"><a href="{{ route('lot.index') }}"><i class="fa fa-money"></i> <span class="nav-label">Мои лоты</span></a></li>
+            <li class="navbar-default"><a href="{{ route('purchases') }}"><i class="fa fa-shopping-basket"></i> <span class="nav-label">Все покупки</span></a></li>
+            <li class="navbar-default"><a href="{{ route('sales') }}"><i class="fa fa-gavel"></i> <span class="nav-label">Все продажи</span></a></li>
 
             @can('admin_panel')
             <li class="navbar-default"><a href="{{ route('admin.index') }}"><i class="fa fa-list"></i> <span class="nav-label">Admin</span></a></li>

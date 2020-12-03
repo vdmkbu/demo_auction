@@ -44,7 +44,14 @@ Route::group([
     Route::get('/{lot}/edit', [\App\Http\Controllers\LotController::class, 'edit'])->name('edit');
     Route::put('/{lot}', [\App\Http\Controllers\LotController::class, 'update'])->name('update');
     Route::delete('/{lot}', [\App\Http\Controllers\LotController::class, 'destroy'])->name('delete');
+    Route::get('/{lot}', [\App\Http\Controllers\LotController::class, 'show'])->name('show');
+    Route::post('/{lot}/accept', [\App\Http\Controllers\LotController::class, 'bidAccept'])->name('bid.accept');
 });
+
+Route::get('/purchases', [\App\Http\Controllers\LotController::class, 'purchases'])->name('purchases')->middleware('auth');
+Route::get('/sales', [\App\Http\Controllers\LotController::class, 'sales'])->name('sales')->middleware('auth');
+
+Route::post('/bid/{lot}/set', [\App\Http\Controllers\BidController::class, 'store'])->name('bid.store')->middleware('auth');
 
 Route::group([
    'prefix' => 'admin',

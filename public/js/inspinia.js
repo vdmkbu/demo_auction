@@ -72,7 +72,10 @@ $(document).ready(function () {
 
             var fields = $(this).serialize();
             $.ajax({
-                url:this.action+'?isNaked=1',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url:this.action,
                 type: this.method,
                 data: fields,
                 always: function(data) {
@@ -83,6 +86,12 @@ $(document).ready(function () {
                     $('#set_bid_'+$(owner).data('id')).hide();
                     $('.modal-body').html(data);
                     window.location.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    var error = jqXHR.responseJSON.error;
+                    $(owner).remove();
+                    $('#set_bid_'+$(owner).data('id')).hide();
+                    $('.modal-body').html(error);
                 }
             });
 
@@ -165,19 +174,23 @@ $(document).ready(function () {
     $('.close_lot').click(function(e){
         e.preventDefault();
 
-        var message = $(this).data('message');
+        var source = $(this).data('source');
 
         if(confirm("Принять ставку и закрыть лот?")) {
 
             $.ajax({
-                url: "/netcat/modules/default/actions/close_lot.php",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: source,
                 method: "POST",
-                data: {"message":message},
                 success: function(data) {
-                    if(data) {
-                        alert("Ставка принята, лот закрыт");
+
+                    if(data.success) {
+                        alert(data.success);
                         window.location.reload();
                     }
+
                 }
             });
         }

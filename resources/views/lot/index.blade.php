@@ -30,11 +30,11 @@
 
                     <div class="tab-content">
                         <div id="tab-1" class="tab-pane active">
-                            @include('lot.include.lot_list', ['lots' => $lots->where('operation_type', \App\Models\Lot::TYPE_BUY)])
+                            @include('lot.include.my_lot_list', ['lots' => $lots->where('operation_type', \App\Models\Lot::TYPE_BUY)])
                         </div>
 
                         <div id="tab-2" class="tab-pane">
-                            @include('lot.include.lot_list', ['lots' => $lots->where('operation_type', \App\Models\Lot::TYPE_SALE)])
+                            @include('lot.include.my_lot_list', ['lots' => $lots->where('operation_type', \App\Models\Lot::TYPE_SALE)])
                         </div>
                     </div>
 
