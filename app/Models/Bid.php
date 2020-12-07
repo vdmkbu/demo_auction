@@ -18,4 +18,9 @@ class Bid extends Model
     {
         return $this->belongsTo(Lot::class);
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

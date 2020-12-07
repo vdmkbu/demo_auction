@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LotReceivedNewBid;
 use App\Models\Bid;
 use App\Models\Lot;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use function GuzzleHttp\json_decode;
 
 class BidController extends Controller
 {
@@ -64,6 +64,14 @@ class BidController extends Controller
 
 
         // отправляем письмо
+        event(new LotReceivedNewBid([
+            'ID лота' => $bid->lot_id,
+            'ИНН предприятия' => $lot->company->INN,
+            'Кто поставил ставку' => $bid->user->name,
+            'Размер ставки, %' => $bid->bid,
+            'Комиссия, руб.' => $comission,
+            'Владелец лота' => $lot->user->name
+        ]));
 
     }
 }

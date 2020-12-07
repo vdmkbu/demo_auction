@@ -41,4 +41,9 @@ class Lot extends Model
     {
         return $this->hasMany(Bid::class);
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }
