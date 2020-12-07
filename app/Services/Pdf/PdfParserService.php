@@ -1,33 +1,34 @@
 <?php
 
 
-namespace App\Repositories;
+namespace App\Services\Pdf;
 
+use antonshell\EgrulNalogParser\Parser;
 
-class PdfDocumentRepository
+class PdfParserService
 {
-    protected $parsed_data;
-    protected $plain_text;
+    private Parser $parser;
 
-    public function __construct($parsed_data, $plain_text)
+    public function __construct(Parser $parser)
     {
-        $this->parsed_data = $parsed_data;
-        $this->plain_text = $plain_text;
+        $this->parser = $parser;
     }
 
-    public function getData()
+    public function parseDocument($path): PdfDocument
     {
-        return $this->parsed_data;
+        $result = $this->parser->parseDocument($path);
+		$plaint_text = $this->parser->getPlainText($path);
+
+		$name = $this->getName($result);
+		$inn = $this->getINN($result);
+		$date = $this->getDate($plaint_text);
+		$okved = $this->getOKVED($result);
+
+		return new PdfDocument($name, $inn, $date, $okved);
     }
 
-    public function getPlainText()
+    private function getName($result)
     {
-        return $this->plain_text;
-    }
-
-    public function getName()
-    {
-        $result = $this->getData();
 
         if(isset($result['common']['full_name']))
         {
@@ -47,15 +48,14 @@ class PdfDocumentRepository
         return $name;
     }
 
-    public function getINN()
+    private function getINN($result)
     {
-        $result = $this->getData();
         return preg_replace('/\D/','',$result['taxes']['inn']);
     }
 
-    public function getDate()
+    private function getDate($result)
     {
-        $result = $this->getPlainText();
+
         preg_match("/по состоянию на (.+)\s№\s/", $result, $output_array);
         $date = isset($output_array[1]) ?: null;
 
@@ -63,9 +63,8 @@ class PdfDocumentRepository
 
     }
 
-    public function getOKVED()
+    private function getOKVED($result)
     {
-        $result = $this->getData();
 
         // список ОКВЭДов
         $main_activity = $result['main_activity'];

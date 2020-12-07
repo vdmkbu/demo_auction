@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use antonshell\EgrulNalogParser\Parser;
+
 use App\Models\Company;
 use App\Repositories\CompanyRepository;
-use App\Repositories\PdfDocumentRepository;
+use App\Services\FileSystemManager;
+use App\Services\FileUploader;
+use App\Services\Pdf\PdfParserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -13,12 +15,17 @@ use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
-    private Parser $parser;
     private CompanyRepository $repository;
-    public function __construct(Parser $parser, CompanyRepository $repository)
+    private PdfParserService $parser;
+    private FileUploader $uploader;
+    private FileSystemManager $fileSystem;
+
+    public function __construct(PdfParserService $parser, CompanyRepository $repository, FileUploader $uploader, FileSystemManager $fileSystem)
     {
         $this->parser = $parser;
         $this->repository = $repository;
+        $this->uploader = $uploader;
+        $this->fileSystem = $fileSystem;
     }
 
     public function index()
@@ -39,30 +46,18 @@ class CompanyController extends Controller
             'file' => 'required|file|mimetypes:application/pdf|max:3072'
         ]);
 
-        $path = $request->file('file')->store('public');
+        $path = $this->uploader->upload($request->file('file'));
 
         try {
 
-            // парсим данные из загруженного pdf
-            $result = $this->parser->parseDocument(Storage::path($path));
-            $plain_text = $this->parser->getPlainText(Storage::path($path));
-
-            $pdf = new PdfDocumentRepository($result, $plain_text);
-
-            // получаем данные
-            $name = $pdf->getName();
-            $inn = $pdf->getINN();
-            $date = $pdf->getDate();
-            $okved = $pdf->getOKVED();
-
-
+            $pdf = $this->parser->parseDocument($this->fileSystem->path($path));
 
             // проверяем, есть ли в базе полученный ИНН
-            if ($this->repository->isINNExists($inn)) {
+            if ($this->repository->isINNExists($pdf->inn)) {
                 // ИНН есть в базе:
                 // удаляем загруженный файл
 
-                Storage::delete($path);
+                $this->fileSystem->delete($path);
                 return redirect(route('company.index'))->with('error', 'Ошибка! Предприятие с таким ИНН уже существует');
             }
             else {
@@ -70,11 +65,11 @@ class CompanyController extends Controller
                 // добавляем новый объект
 
                 Company::create([
-                    'name' => $name,
-                    'INN' => $inn,
+                    'name' => $pdf->name,
+                    'INN' => $pdf->inn,
                     'file' => $path,
-                    'OKVED' => $okved,
-                    'date' => $date,
+                    'OKVED' => $pdf->okved,
+                    'date' => $pdf->date,
                     'user_id' => auth()->id(),
                 ]);
 
@@ -120,36 +115,26 @@ class CompanyController extends Controller
             'file' => 'required|file|mimetypes:application/pdf|max:3072'
         ]);
 
-        $path = $request->file('file')->store('public');
+        $path = $this->uploader->upload($request->file('file'));
 
         try {
 
-            // парсим данные из загруженного pdf
-            $result = $this->parser->parseDocument(Storage::path($path));
-            $plain_text = $this->parser->getPlainText(Storage::path($path));
-
-            $pdf = new PdfDocumentRepository($result, $plain_text);
-
-            // получаем данные
-            $name = $pdf->getName();
-            $inn = $pdf->getINN();
-            $date = $pdf->getDate();
-            $okved = $pdf->getOKVED();
+            $pdf = $this->parser->parseDocument($this->fileSystem->path($path));
 
             // нашли ИНН в текущем объекте  - можно обновить. если нашли такой ИНН в другом объекте, то обновить нельзя
-            if ($company->INN == $inn) {
+            if ($company->INN == $pdf->inn) {
 
                 $company->update([
-                    'name' => $name,
-                    'date' => $date,
-                    'OKVED' => $okved
+                    'name' => $pdf->name,
+                    'date' => $pdf->date,
+                    'OKVED' => $pdf->okved
                 ]);
 
                 return redirect(route('company.index'))->with('success', 'Преприятие обновлено');
             }
             else {
                 // удаляем загруженный файл
-                Storage::delete($path);
+                $this->fileSystem->delete($path);
                 return redirect(route('company.index'))->with('error', 'Ошибка! Предприятие с таким ИНН уже существует');
             }
 
@@ -166,7 +151,7 @@ class CompanyController extends Controller
             abort(403, 'Access denied');
         }
 
-        Storage::delete($company->file);
+        $this->fileSystem->delete($company->file);
         $company->delete();
 
         return redirect(route('company.index'))->with('success', 'Предприятие удалено');
