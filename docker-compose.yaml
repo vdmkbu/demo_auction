@@ -22,6 +22,9 @@ services:
       - "DB_DATABASE=bcon"
       - "DB_USERNAME=bcon"
       - "DB_PASSWORD=123"
+      - "MAIL_MAILER=smtp"
+      - "MAIL_HOST=mailer"
+      - "MAIL_PORT=1025"
     volumes:
       - ./:/var/www
     depends_on:
@@ -38,6 +41,9 @@ services:
       - "DB_DATABASE=bcon"
       - "DB_USERNAME=bcon"
       - "DB_PASSWORD=123"
+      - "MAIL_MAILER=smtp"
+      - "MAIL_HOST=mailer"
+      - "MAIL_PORT=1025"
     volumes:
       - ./:/var/www
     tty: true
@@ -61,3 +67,10 @@ services:
       - ./storage/docker/postgres:/var/lib/postgresql/data
     ports:
     - "54321:5432"
+
+  mailer:
+    image: mailhog/mailhog
+    restart: always
+    ports:
+    - 1025:1025
+    - 8025:8025
