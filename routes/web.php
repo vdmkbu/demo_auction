@@ -75,5 +75,8 @@ Route::group([
     Route::get('/users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/bids', [\App\Http\Controllers\Admin\BidController::class, 'index'])->name('bids.index');
+    Route::get('/bids/{lot}', [\App\Http\Controllers\Admin\BidController::class, 'show'])->name('bids.show');
 });
 
