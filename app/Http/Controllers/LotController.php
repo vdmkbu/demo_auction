@@ -2,17 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Bid;
+
 use App\Models\Company;
 use App\Models\Lot;
-use App\Models\User;
+use App\Repositories\BidRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class LotController extends Controller
 {
+    private BidRepository $bidRepository;
+
+    public function __construct(BidRepository $bidController)
+    {
+        $this->bidRepository = $bidController;
+    }
 
     public function index()
     {
@@ -147,146 +152,11 @@ class LotController extends Controller
             abort(403, 'Access denied');
         }
 
-        $max_bid = DB::table('bids')
-            ->select('id')
-            ->where('lot_id','=',$lot->id)
-            ->orderBy('bid', 'DESC')
-            ->get()
-            ->first();
-
+        $max_bid = $this->bidRepository->getMaxBidByLot($lot);
 
         $lot->accepted_bid_id = $max_bid->id;
         $lot->save();
 
         return response()->json(['success' => "Ставка принята, лот закрыт"]);
-    }
-
-    public function purchases()
-    {
-
-        $lots = Lot::all()->where('operation_type', Lot::TYPE_BUY);
-
-        $max_bids = [];
-        foreach($lots as $lot) {
-            foreach($lot->bids as $bid) {
-
-                $max_bid = $bid->maxBid($bid->lot_id)->max('bid');
-
-                //$max_bids[$bid->lot_id] = $max_bid;
-                $max_bids[$bid->lot_id] = [
-                    'max_bid' => $max_bid,
-                    'next_fee' => $max_bid > $lot->fee ? $max_bid + 0.1 : $lot->fee
-                ];
-            }
-        }
-
-        $user = User::find(auth()->id());
-        $account = $user->account;
-
-
-        // все деньги, которые зарезервированы под уже поставленные максимальные ставки
-        $reserved = [];
-
-        // получим все lot_id из ставок
-        $lot_ids = DB::table('bids')->select('lot_id')->groupBy('lot_id')->get();
-        foreach ($lot_ids as $lot) {
-            $lot_id = $lot->lot_id;
-
-            // для каждого лота получим максимальное значение ставки и id пользователя, который её поставил
-            $data = DB::table('bids')->select(['user_id', 'bid'])->where('lot_id','=',$lot_id)->orderBy('bid', 'DESC')->limit(1)->get();
-
-            foreach ($data as $item) {
-                $user_id = $item->user_id;
-                $bid = $item->bid;
-
-                // если макс. ставка у текущего пользователя, то считаем сумму
-                if ($user_id == auth()->id()) {
-
-                    $sum = Lot::find($lot_id)->sum;
-                    $reserved[] = ($sum/100) * $bid;
-
-                }
-
-            }
-        }
-
-        $reserved = array_sum($reserved);
-
-        $free = $account - $reserved;
-
-
-
-        return view('lot.purchases', [
-            'lots' => $lots,
-            'bids' => Bid::where('user_id', auth()->id())->get(),
-            'max_bids' => $max_bids,
-            'account' => $account,
-            'reserved' => $reserved,
-            'free' => $free
-        ]);
-
-
-    }
-
-    public function sales()
-    {
-        $lots = Lot::all()->where('operation_type', Lot::TYPE_SALE);
-
-        $max_bids = [];
-        foreach($lots as $lot) {
-            foreach($lot->bids as $bid) {
-
-                $max_bid = $bid->maxBid($bid->lot_id)->max('bid');
-
-                $max_bids[$bid->lot_id] = [
-                    'max_bid' => $max_bid,
-                    'next_fee' => $max_bid > $lot->fee ? $max_bid + 0.1 : $lot->fee
-                ];
-            }
-        }
-
-        $user = User::find(auth()->id());
-        $account = $user->account;
-
-
-        // все деньги, которые зарезервированы под уже поставленные максимальные ставки
-        $reserved = [];
-
-        // получим все lot_id из ставок
-        $lot_ids = DB::table('bids')->select('lot_id')->groupBy('lot_id')->get();
-        foreach ($lot_ids as $lot) {
-            $lot_id = $lot->lot_id;
-
-            // для каждого лота получим максимальное значение ставки и id пользователя, который её поставил
-            $data = DB::table('bids')->select(['user_id', 'bid'])->where('lot_id','=',$lot_id)->orderBy('bid', 'DESC')->limit(1)->get();
-
-            foreach ($data as $item) {
-                $user_id = $item->user_id;
-                $bid = $item->bid;
-
-                // если макс. ставка у текущего пользователя, то считаем сумму
-                if ($user_id == auth()->id()) {
-
-                    $sum = Lot::find($lot_id)->sum;
-                    $reserved[] = ($sum/100) * $bid;
-
-                }
-
-            }
-        }
-
-        $reserved = array_sum($reserved);
-
-        $free = $account - $reserved;
-
-
-        return view('lot.sales', [
-            'lots' => $lots,
-            'bids' => Bid::where('user_id', auth()->id())->get(),
-            'max_bids' => $max_bids,
-            'account' => $account,
-            'reserved' => $reserved,
-            'free' => $free
-        ]);
     }
 }

@@ -32,7 +32,13 @@ Route::group([
     Route::delete('/{company}', [\App\Http\Controllers\CompanyController::class, 'destroy'])->name('destroy');
 });
 
-Route::get('/news', \App\Http\Controllers\NewsController::class)->name('home')->middleware('auth');
+Route::group([
+    'middleware' => 'auth'
+], function () {
+    Route::get('/news', \App\Http\Controllers\NewsController::class)->name('home');
+    Route::get('/purchases', \App\Http\Controllers\PurchasesController::class)->name('purchases');
+    Route::get('/sales', \App\Http\Controllers\SalesController::class)->name('sales');
+});
 
 Route::group([
     'prefix' => 'lots',
@@ -49,8 +55,6 @@ Route::group([
     Route::post('/{lot}/accept', [\App\Http\Controllers\LotController::class, 'bidAccept'])->name('bid.accept');
 });
 
-Route::get('/purchases', [\App\Http\Controllers\LotController::class, 'purchases'])->name('purchases')->middleware('auth');
-Route::get('/sales', [\App\Http\Controllers\LotController::class, 'sales'])->name('sales')->middleware('auth');
 
 Route::post('/bid/{lot}/set', [\App\Http\Controllers\BidController::class, 'store'])->name('bid.store')->middleware('auth');
 
