@@ -18,6 +18,11 @@ Route::get('/', function () {
 })->middleware('auth');
 
 
+Route::get('/logout', function() {
+   \Illuminate\Support\Facades\Auth::logout();
+   return redirect(route('login'));
+})->name('logout');
+
 Route::group([
     'prefix' => 'company',
     'as' => 'company.',

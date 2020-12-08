@@ -10,11 +10,10 @@
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <span class="clear">
 
-                                    <span class="block m-t-xs"><strong class="font-bold">Login</strong> <b class="caret"></b></span>
+                                    <span class="block m-t-xs"><strong class="font-bold">{{ \Illuminate\Support\Facades\Auth::user()->name }}</strong> <b class="caret"></b></span>
                                  </span>
                     </a>
                     <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                        <li><a href="/profile">Профиль</a></li>
 
                         <li class="divider"></li>
                         <li><a href="">Выход</a></li>
@@ -23,9 +22,9 @@
 
                 </div>
 
-                <span class="text-info">Баланс: Account р. </span>
-                <span class="text-info">Свободные: ['Account']-$reserved р.</span>
-                <span class="text-info">Резерв: $reserved р.</span>
+                <span class="text-info">Баланс: {{ $user_account }} р. </span>
+                <span class="text-info">Свободные: {{ $user_free_money }} р.</span>
+                <span class="text-info">Резерв: {{ $user_reserved_money }} р.</span>
                 <div class="logo-element">
                     b-con
                 </div>
@@ -66,7 +65,7 @@
                 </li>
 
                 <li>
-                    <a href="">
+                    <a href="{{ route('logout') }}">
                         <i class="fa fa-sign-out"></i> Выход
                     </a>
                 </li>
