@@ -35,6 +35,10 @@
                     <td>{{ $user->account }}</td>
                     <td>{{ $user->role }}</td>
                     <td>
+                        <button type="button" class="btn btn-warning btn-xs">
+                            <a style="color: white" href="{{ route('admin.users.password', $user->id) }}">Сменить пароль</a>
+                        </button>
+
                         <button type="button" class="btn btn-success btn-xs">
                             <a style="color: white" href="{{ route('admin.users.edit', $user->id) }}">Редактировать</a>
                         </button>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -44,5 +45,16 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect(route('admin.users.index'))->with('success', 'Пользователь удалён');
+    }
+
+    public function password(User $user)
+    {
+        return view('admin.users.password', compact('user'));
+    }
+
+    public function passwordUpdate(User $user, Request $request, ResetUserPassword $resetUserPassword)
+    {
+        $resetUserPassword->reset($user, $request->all());
+        return redirect(route('admin.users.index'))->with('success', 'Пароль успешно обновлен');
     }
 }
