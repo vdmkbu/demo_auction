@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Events\LotReceivedNewBid;
 use App\Mail\NewBid;
 use App\Models\User;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 
 class NotifyAdmin
@@ -29,11 +27,13 @@ class NotifyAdmin
      */
     public function handle(LotReceivedNewBid $event)
     {
-        $data = $event->data;
+        $bid = $event->bid;
+        $lot = $event->lot;
+        $commission = $event->commission;
 
         User::where('role', User::ROLE_ADMIN)->get()
-            ->each(function ($user) use ($data) {
-                Mail::to($user->email)->send(new NewBid($data));
+            ->each(function ($user) use ($bid, $lot, $commission) {
+                Mail::to($user->email)->send(new NewBid($bid, $lot, $commission));
             });
     }
 }

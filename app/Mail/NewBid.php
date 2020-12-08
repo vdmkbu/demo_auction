@@ -2,8 +2,9 @@
 
 namespace App\Mail;
 
+use App\Models\Bid;
+use App\Models\Lot;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -11,11 +12,15 @@ class NewBid extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public array $data;
+    public Bid $bid;
+    public Lot $lot;
+    public string $commission;
 
-    public function __construct(array $data)
+    public function __construct(Bid $bid, Lot $lot, string $commission)
     {
-        $this->data = $data;
+        $this->bid = $bid;
+        $this->lot = $lot;
+        $this->commission = $commission;
     }
 
 

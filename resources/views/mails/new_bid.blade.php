@@ -1,11 +1,13 @@
 @component('mail::message')
 # Новая ставка на лот
 
-<table border="1">
-@foreach($data as $label => $value)
-        <tr><td>{{ $label }}: {{ $value }}</td></tr>
-@endforeach
-</table>
+ID лота: {{ $bid->lot_id }} <br>
+ИНН предприятия: {{ $lot->company->INN }} <br>
+Кто поставил ставку: {{ $bid->user->name }} <br>
+Размер ставки, %: {{ $bid->bid }} <br>
+Комиссия, руб.: {{ $commission }} <br>
+Владелец лота: {{ $lot->user->name }} <br>
+
 
 
 @endcomponent
