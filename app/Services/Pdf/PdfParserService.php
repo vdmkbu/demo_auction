@@ -50,7 +50,17 @@ class PdfParserService
 
     private function getINN($result)
     {
-        return preg_replace('/\D/','',$result['taxes']['inn']);
+        if (!isset($result['taxes']['inn'])) {
+            throw new \DomainException('ИНН не может быть получен');
+        }
+
+        $inn = preg_replace('/\D/','',$result['taxes']['inn']);
+
+        if (!$inn) {
+            throw new \DomainException('ИНН не может быть получен');
+        }
+
+        return $inn;
     }
 
     private function getDate($result)
