@@ -1,61 +1,32 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Схема работы
+Участник площадки добавляет файл выписки с сайта https://egrul.nalog.ru/   
+Из файла получаем данные ОКВЭД и ИНН, добавляем сущность "Предприятие" с этими данными:  
+![Альтернативный текст](https://s139vla.storage.yandex.net/rdisk/be77b53d33298b567a8322c8e4a2387d8d7bca9d10ca1428336241eb39759809/5ff595ad/TZptT7iujWHj9bWUgbCXYDBTiHtbQq38y71r3dvASH9gZxbvyBnfEMCIN_1QCmV-ad68u36CaLqYMEVUjo_kGw==?uid=127173401&filename=1.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=42253&hid=8ad8e1cae6d451ccd765090dc11edb3b&media_type=image&tknv=v2&etag=f98f05d3bd4f675610bf9697877a71e0&rtoken=suHVYkfDapHG&force_default=yes&ycrid=na-3cfe93921dfc74cfcc2778e2ef36b1c0-downloader20e&ts=5b839131f0540&s=51d0e1b1a9edf88ad51519c7042c8ea7013f81ed249ecb7a4ddb15107ef10c82&pb=U2FsdGVkX195gsrOfvOZw4oyj7T9QqOr7HOBK9Gk0Bp-EKGQuJ_vcOSP99mw0t4rjis-y6VGpqGd9mQM6y6iudeRz6wShsDBa2bSDxCVUDo)  
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Далее участник добавляет лот, выбирая своё предприятие из списка и указывает тип операции - "покупка" или "продажа", описание номенклатуры, ставку НДС, сумму с НДС и процент комиссии:  
+![Альтернативный текст](https://s727sas.storage.yandex.net/rdisk/d6f034411e98ce0fdf33b7d376ae84da9b1d90bf3c3b351fa0497905ae2b45bb/5ff59603/TZptT7iujWHj9bWUgbCXYNzaWqJaGlG6K6z9YeDT7b4na1lf5Lxlgz8kRDoTj0HIO0tKogNS_ZtSPK5QJgM5sw==?uid=127173401&filename=2.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=25701&hid=73114a69addadf7c6197896138e5ee7f&media_type=image&tknv=v2&etag=1e720188702796822419ec1e2f2dc775&rtoken=hl6hOJhS6hom&force_default=yes&ycrid=na-b3dc286838b625fa113cc6ffd4ac450c-downloader20e&ts=5b839183f46c0&s=e4e8f7e174bc6676eba5478e9066bb133dafb10133edafb2f9397642bcf4c46d&pb=U2FsdGVkX18ELIojNFvrh8zsRvvsS6kGt9GOnhfWj8HhvtO9CI1zzqY-8lswPCnVYXIqRq7FpyYPNl_Swerp6XMWqiUCcQ1qFSZ87dJykSg)
 
-## About Laravel
+В зависимости от выбранного типа операции лот попадает либо в раздел "Все покупки", либо "Все продажи":  
+![Альтернативный текст](https://s323vla.storage.yandex.net/rdisk/5e16bab99ee19647b907509e8f50d931afbdf6797b81b9251b519dd7278b4fca/5ff59667/TZptT7iujWHj9bWUgbCXYIuPJg3k-f_FWyGCikezujFdEtddZRtDtryJMCdtPsvQTslu0cbSY3QBF6zP7c7Y-Q==?uid=127173401&filename=3.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=33424&hid=112391575af9c9041d1e83da1cc62819&media_type=image&tknv=v2&etag=b7c9233c86c5eba09ab2058bc5dcd435&rtoken=7n2O7FurdKUN&force_default=yes&ycrid=na-f0fb1c437fe9a337cf1a92d0780c990f-downloader20e&ts=5b8391e3527c0&s=4571481a2a290e78f8ca6bdcaf7b8f6e867ea6d9d87af20b8545b8a4cebf040e&pb=U2FsdGVkX189y410ALc9dURtpBoNOsWlBTff260DOoOd13ob6I-OsboEFiZ_lm1_nDx_vno3bf7kbCPvTFEJf6lB2nCXTcoEQSnSCi9cIQg)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+В разделах "Все покупки" и "Все продажи" остальные участники площадки видят лоты:  
+![Альтернативный текст](https://s100sas.storage.yandex.net/rdisk/05cf32dd3d25d4a72d8d81cc104bcd81fe060ebc94ac16f20278d2eae6b18650/5ff596a9/TZptT7iujWHj9bWUgbCXYDFWqk9sTMNHKc93qW8PbcB4hBmP45LoLQzNtQwa6o6o1YC3JUaiawPrvY1LuDZrLg==?uid=127173401&filename=4.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=57819&hid=b2feaa5c6b7b17ffc77fe357ab75d56a&media_type=image&tknv=v2&etag=da099464234e206acc3a9a95f58c8b90&rtoken=WIKWzprhhZAL&force_default=yes&ycrid=na-76822e6856aad8471d7e720de0354adf-downloader20e&ts=5b83922243c40&s=b3288b4d0b9e3c3eaf2002c904555038191c0cd0a66fab215b0adaf5e394b8bf&pb=U2FsdGVkX1_PNhu4ghUZDc67pReFeYh50Re-c-D1bw8SIHOZ81_Ee2U4yI9c2JJdp1KsJRNsZ5x_cgMsh80TAZjhgV56yxwg1eKR9XyT0cU)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+и могут предлагать ставки к лоту (ставка - это процент, шаг от значения "Комиссия" текущего лота):  
+![Альтернативный текст](https://s387man.storage.yandex.net/rdisk/37b8ad185aae4f8567d876a34eaa430a944e22be42d6260489f7395abf043748/5ff596da/TZptT7iujWHj9bWUgbCXYFrwAn3XTiNCc93zE2UvmQc-Pq2AsRcfDCQStKY8sdW4cMA9Cyv0GyugflmZm_GJkw==?uid=127173401&filename=5.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=5891&hid=559060bd988938d79d10550b95b6f68f&media_type=image&tknv=v2&etag=d0d6b9e2e0fffc291d22fecc85dad726&rtoken=DpKLdqp5ucsm&force_default=yes&ycrid=na-348254f9c9fa45812337b32b5fa07d5a-downloader20e&ts=5b839250fea80&s=2eaa582c9236879d6964894cda19f89a730c8246f8c4921740fde78a6d34f42d&pb=U2FsdGVkX191li2iircUUUb-vwIcgdV8HhfJESkaMMszaxbb6B6e5a1K3OjhjftfD9pilUImfwdFDsdmgs3TF4YZm4337Nw8uvi7LBnfQ2M)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+* получаем максимальную ставку для текущего лота.  
+* если ставка для этого лота есть и она больше, чем комиссия, то след. шаг это макс.ставка + 0.1  
+* если ставки нет, то след. шаг это комиссия лота.      
+* при ставке проверяется зарезервированные и свободные деньги участника, который делает ставку.  
+* **"зарезервированные"** — это все деньги, которые зарезервированы под уже поставленные максимальные ставки.   
+* **"свободные деньги"** — это "деньги на балансе" участника минус зарезервированные.  
+* если свободных средств меньше, чем комиссия — **ставку сделать нельзя**.  
+![Альтернативный текст](https://s532man.storage.yandex.net/rdisk/57e6268e360ee351aecddc0e49321275621764c4bbaafff1d228ba3703389f9b/5ff59888/TZptT7iujWHj9bWUgbCXYJLcH1DhBt_lJ-LcGC_EjkRki4r9pxQtnLbls_ARa0j3JlvZbok6S0NlQdFSlfCYtQ==?uid=127173401&filename=6.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=7272&hid=1396616b8ee590c5e392611f2000a9bc&media_type=image&tknv=v2&etag=b835d44bb63c76ac5be8e6311862e6f4&rtoken=ik7Dm0kWTgv2&force_default=yes&ycrid=na-ab760d94a08604f0c266cd264c6b6b38-downloader5h&ts=5b8393eb13200&s=b3b698f14b767c2aff565c142ba95ce062ea6d9e5448fb13f228f4d7873aefc5&pb=U2FsdGVkX19o_4Gh47Nciqu7kmgi_15pepONTt_6GbZwvv7VRWop3dJ_fPtKPyBrIf1eFY0u5EK8QmV9e9nuGK9IUcxBm5y_ByKRQPHWpsg)  
 
-## Learning Laravel
+Владелец лота может принять ставку в разделе "Мои лоты":  
+![Альтернативный текст](https://s726sas.storage.yandex.net/rdisk/c0c91175c8402b728b3d84aa0cea8854cfb93af43f5a172561f073ed81bee162/5ff5999d/TZptT7iujWHj9bWUgbCXYODodZe6DiC-s9UPyd0lq36MhV5Vnf5dTJv4QhdL30kwXedyQbwNaU6lS01gYOWnHg==?uid=127173401&filename=7.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=35494&hid=606618646b5114c5d8148f333b587d3a&media_type=image&tknv=v2&etag=1bdb1f681185ea003dad11f3790ff167&rtoken=Au7JIrRzs2X0&force_default=yes&ycrid=na-eac4040311a1ebde3377bebc0a726eea-downloader11f&ts=5b8394f33e140&s=0ccc90ea56dc4e5035da4ea0fd97bb588cd09039caf00feea0f40d53967d8c46&pb=U2FsdGVkX18oEqRonShmFru2ezR7Rmy-HyUIDQRJRC9k8zgyzzYoABmOldXiWt7H03wFPw6kYo7oDgbXYGeYSzybyQn3CH6SETNE2kHZFk8)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+тогда лот будет считаться закрытым и больше не будет выводиться на страницах "Все покупки" и "Все продажи":  
+![Альтернативный текст](https://s744sas.storage.yandex.net/rdisk/c938ffe6f7f684e1bef2972718ebf49934168fce6b408cd32073cf0729e36475/5ff599c4/TZptT7iujWHj9bWUgbCXYMMSYTbblgmg_1E2xCV9wH_DGSh-HBL8SHgmneeP2zdqm5YTaxSJO-XRd8bXwn_LFA==?uid=127173401&filename=8.png&disposition=inline&hash=&limit=0&content_type=image%2Fpng&owner_uid=127173401&fsize=25937&hid=a2cd606eb586a6faf7cd442060047fc5&media_type=image&tknv=v2&etag=313bc8e94f9eb0b4bcad92ed877bb078&rtoken=RXFgaLSYYqXL&force_default=yes&ycrid=na-683631d1deb997fd76ed9e00eb99562b-downloader11f&ts=5b8395186f900&s=82110bbbac46403f929128982f8fca8a1d1a7689c9c8a876441d1152f8dab5fe&pb=U2FsdGVkX1_izhLiEFtDFKJiPIE3TcTplwcNHkyISJz9DMOGQskMPBq8AIgW1qD3JTJSxvrU5bsqPSK725qAH9TzhCWfjod7PI0as7P_cjY)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
