@@ -1,19 +1,19 @@
 ## Схема работы
 Участник площадки добавляет файл выписки с сайта https://egrul.nalog.ru/   
 Из файла получаем данные ОКВЭД и ИНН, добавляем сущность "Предприятие" с этими данными:  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/k_uHGUPYf510tg)  
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/1.png)  
 
 Далее участник добавляет лот, выбирая своё предприятие из списка и указывает тип операции - "покупка" или "продажа", описание номенклатуры, ставку НДС, сумму с НДС и процент комиссии:  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/TWcxYy6-t1HEzg)
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/2.png)
 
 В зависимости от выбранного типа операции лот попадает либо в раздел "Все покупки", либо "Все продажи":  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/fzidB-K02a7EnA)
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/3.png)
 
 В разделах "Все покупки" и "Все продажи" остальные участники площадки видят лоты:  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/8Xop5brCjgw2nA)
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/4.png)
 
 и могут предлагать ставки к лоту (ставка - это процент, шаг от значения "Комиссия" текущего лота):  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/xdzhgxIL-1Qy7w)
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/5.png)
 
 * получаем максимальную ставку для текущего лота.  
 * если ставка для этого лота есть и она больше, чем комиссия, то след. шаг это макс.ставка + 0.1  
@@ -22,11 +22,11 @@
 * **"зарезервированные"** — это все деньги, которые зарезервированы под уже поставленные максимальные ставки.   
 * **"свободные деньги"** — это "деньги на балансе" участника минус зарезервированные.  
 * если свободных средств меньше, чем комиссия — **ставку сделать нельзя**.  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/xSYR1m2cs_m_pQ)  
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/6.png)  
 
 Владелец лота может принять ставку в разделе "Мои лоты":  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/fpF9vuJDUZ3CMw)
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/7.png)
 
 тогда лот будет считаться закрытым и больше не будет выводиться на страницах "Все покупки" и "Все продажи":  
-![Альтернативный текст](https://getfile.dokpub.com/yandex/get/https://yadi.sk/i/3JpDuBgIknNaEw)
+![Альтернативный текст](https://raw.githubusercontent.com/vdmkbu/demo_auction/main/storage/8.png)
 
