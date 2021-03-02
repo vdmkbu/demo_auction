@@ -126,6 +126,10 @@ class LotController extends Controller
     }
 
 
+    /**
+     * @throws BidAcceptedException
+     * @throws LotException
+     */
     public function destroy(Lot $lot)
     {
         if (Gate::denies('company_owner', $lot->user_id)) {
@@ -136,7 +140,10 @@ class LotController extends Controller
             throw new BidAcceptedException('Удаление запрещено, т.к. есть принятая ставка');
         }
 
-        return $lot->delete();
+        if (!$this->lotService->remove($lot->id)) {
+            throw new LotException('Ошибка при удалении');
+        }
+
     }
 
     public function bidAccept(Lot $lot)

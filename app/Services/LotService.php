@@ -47,6 +47,19 @@ class LotService
         return true;
     }
 
+    public function remove(int $lot_id): bool
+    {
+        $lot = $this->getLot($lot_id);
+
+        if (!$lot) {
+            return false;
+        }
+
+        $lot->delete();
+
+        return true;
+    }
+
     public function acceptBid(int $lot_id, int $max_bid_id): bool
     {
         $lot = $this->getLot($lot_id);
