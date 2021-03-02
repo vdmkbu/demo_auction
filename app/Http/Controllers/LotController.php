@@ -136,8 +136,9 @@ class LotController extends Controller
 
         $max_bid = $this->bidRepository->getMaxBidByLot($lot);
 
-        $lot->accepted_bid_id = $max_bid->id;
-        $lot->save();
+        if (!$this->lotService->acceptBid($lot->id, $max_bid->id)) {
+            return redirect()->back()->with('error','Ошибка при принятии ставки');
+        }
 
         return response()->json(['success' => "Ставка принята, лот закрыт"]);
     }

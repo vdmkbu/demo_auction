@@ -29,7 +29,7 @@ class LotService
 
     public function edit(int $lot_id, LotDto $request): bool
     {
-        $lot = Lot::find($lot_id);
+        $lot = $this->getLot($lot_id);
 
         if (!$lot) {
             return false;
@@ -45,5 +45,27 @@ class LotService
         ]);
 
         return true;
+    }
+
+    public function acceptBid(int $lot_id, int $max_bid_id): bool
+    {
+        $lot = $this->getLot($lot_id);
+
+        if (!$lot) {
+            return false;
+        }
+
+        $lot->accepted_bid_id = $max_bid_id;
+
+        if (!$lot->save()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function getLot(int $id): Lot
+    {
+        return Lot::findOrFail($id);
     }
 }
