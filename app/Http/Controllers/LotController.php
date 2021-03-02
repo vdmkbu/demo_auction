@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Company;
+use App\Http\Requests\LotStoreRequest;
+use App\Http\Requests\LotUpdateRequest;
 use App\Models\Lot;
 use App\Repositories\BidRepository;
 use App\Repositories\CompanyRepository;
 use App\Repositories\LotRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\Rule;
+
 
 class LotController extends Controller
 {
@@ -63,17 +63,8 @@ class LotController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(LotStoreRequest $request)
     {
-
-        $this->validate($request, [
-            'company_id' => 'required|integer|exists:companies,id',
-            'operation_type' => ['required', Rule::in(Lot::typesList())],
-            'nomenclature' => 'required|max:3000',
-            'NDS' => ['required', Rule::in([0, 10, 18])],
-            'sum' => 'required|numeric',
-            'fee' => 'required|numeric|between: 2,99',
-        ]);
 
         Lot::create([
             'company_id' => $request->company_id,
@@ -99,7 +90,7 @@ class LotController extends Controller
             return redirect(route('lot.index'))->with('error', 'Редактирование запрещено, т.к. есть принятая ставка');
         }
 
-        $companies = Company::owner(auth()->id())->get();
+        $companies = $this->companyRepository->getOwnerCompanies(auth()->id());
 
         return view('lot.edit', [
             'lot' => $lot,
@@ -108,7 +99,7 @@ class LotController extends Controller
     }
 
 
-    public function update(Request $request, Lot $lot)
+    public function update(LotUpdateRequest $request, Lot $lot)
     {
         if (Gate::denies('company_owner', $lot->user_id)) {
             abort(403, 'Access denied');
@@ -118,14 +109,7 @@ class LotController extends Controller
             return redirect(route('lot.index'))->with('error', 'Редактирование запрещено, т.к. есть принятая ставка');
         }
 
-        $this->validate($request, [
-            'company_id' => 'required|integer|exists:companies,id',
-            'operation_type' => ['required', Rule::in(Lot::typesList())],
-            'nomenclature' => 'required|max:3000',
-            'NDS' => ['required', Rule::in([0, 10, 18])],
-            'sum' => 'required|numeric',
-            'fee' => 'required|numeric|between: 2,99',
-        ]);
+
 
         $lot->update([
             'company_id' => $request->company_id,
