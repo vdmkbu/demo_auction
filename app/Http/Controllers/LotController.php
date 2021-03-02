@@ -6,6 +6,8 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use App\Models\Lot;
 use App\Repositories\BidRepository;
+use App\Repositories\CompanyRepository;
+use App\Repositories\LotRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -13,15 +15,21 @@ use Illuminate\Validation\Rule;
 class LotController extends Controller
 {
     private BidRepository $bidRepository;
+    private LotRepository $lotRepository;
+    private CompanyRepository $companyRepository;
 
-    public function __construct(BidRepository $bidController)
+    public function __construct(BidRepository $bidController,
+                                LotRepository $lotRepository,
+                                CompanyRepository $companyRepository)
     {
         $this->bidRepository = $bidController;
+        $this->lotRepository = $lotRepository;
+        $this->companyRepository = $companyRepository;
     }
 
     public function index()
     {
-        $lots = Lot::owner(auth()->id())->get();
+        $lots = $this->lotRepository->getOwnerLots(auth()->id());
 
         $max_bids = [];
         foreach ($lots as $lot) {
@@ -41,7 +49,7 @@ class LotController extends Controller
 
     public function create()
     {
-        $companies = Company::owner(auth()->id())->get();
+        $companies = $this->companyRepository->getOwnerCompanies(auth()->id());
         return view('lot.create', [
             'companies' => $companies
         ]);
