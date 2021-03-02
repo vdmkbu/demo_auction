@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 
-use App\Http\Requests\LotStoreRequest;
+use App\Http\Requests\LotCreateRequest;
 use App\Http\Requests\LotUpdateRequest;
 use App\Models\Lot;
 use App\Repositories\BidRepository;
 use App\Repositories\CompanyRepository;
 use App\Repositories\LotRepository;
+use App\Services\LotService;
 use Illuminate\Support\Facades\Gate;
 
 
@@ -17,14 +18,17 @@ class LotController extends Controller
     private BidRepository $bidRepository;
     private LotRepository $lotRepository;
     private CompanyRepository $companyRepository;
+    private LotService $lotService;
 
     public function __construct(BidRepository $bidController,
                                 LotRepository $lotRepository,
-                                CompanyRepository $companyRepository)
+                                CompanyRepository $companyRepository,
+                                LotService $lotService)
     {
         $this->bidRepository = $bidController;
         $this->lotRepository = $lotRepository;
         $this->companyRepository = $companyRepository;
+        $this->lotService = $lotService;
     }
 
     public function index()
@@ -63,18 +67,11 @@ class LotController extends Controller
     }
 
 
-    public function store(LotStoreRequest $request)
+    public function store(LotCreateRequest $request)
     {
-
-        Lot::create([
-            'company_id' => $request->company_id,
-            'operation_type' => $request->operation_type,
-            'nomenclature' => $request->nomenclature,
-            'NDS' => $request->NDS,
-            'sum' => $request->sum,
-            'fee' => $request->fee,
-            'user_id' => auth()->id()
-        ]);
+        if (!$this->lotService->create($request->getDTO())) {
+            return redirect()->back()->with('error', 'Ошибка при добавлении');
+        }
 
         return redirect(route('lot.index'))->with('success', 'Лот добавлен');
     }
