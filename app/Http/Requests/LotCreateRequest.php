@@ -2,11 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\DTO\LotCreateDto;
 use App\Models\Lot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class LotStoreRequest extends FormRequest
+class LotCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,5 +34,17 @@ class LotStoreRequest extends FormRequest
             'sum' => 'required|numeric',
             'fee' => 'required|numeric|between: 2,99',
         ];
+    }
+
+    public function getDTO(): LotCreateDto
+    {
+        return new LotCreateDto(
+            $this->get('company_id'),
+            $this->get('operation_type'),
+            $this->get('nomenclature'),
+            $this->get('NDS'),
+            $this->get('sum'),
+            $this->get('fee')
+        );
     }
 }
