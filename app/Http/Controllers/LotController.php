@@ -159,6 +159,7 @@ class LotController extends Controller
             throw new BidException('Ошибка при принятии ставки');
         }
 
-        return response()->json(['success' => "Ставка принята, лот закрыт"]);
+        return response()->json(['success' => true,
+                                 'message' => "Ставка принята, лот закрыт"]);
     }
 }
