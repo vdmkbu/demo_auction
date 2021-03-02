@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Exceptions\BidAcceptedException;
+use App\Exceptions\BidException;
+use App\Exceptions\LotException;
 use App\Http\Requests\LotCreateRequest;
 use App\Http\Requests\LotUpdateRequest;
 use App\Models\Lot;
@@ -67,16 +70,21 @@ class LotController extends Controller
     }
 
 
+    /**
+     * @throws LotException
+     */
     public function store(LotCreateRequest $request)
     {
         if (!$this->lotService->create($request->getDTO())) {
-            return redirect()->back()->with('error', 'Ошибка при добавлении');
+            throw new LotException('Ошибка при добавлении');
         }
 
         return redirect(route('lot.index'))->with('success', 'Лот добавлен');
     }
 
-
+    /**
+     * @throws BidAcceptedException
+     */
     public function edit(Lot $lot)
     {
         if (Gate::denies('company_owner', $lot->user_id)) {
@@ -84,7 +92,7 @@ class LotController extends Controller
         }
 
         if ($lot->accepted_bid_id) {
-            return redirect(route('lot.index'))->with('error', 'Редактирование запрещено, т.к. есть принятая ставка');
+            throw new BidAcceptedException('Редактирование запрещено, т.к. есть принятая ставка');
         }
 
         $companies = $this->companyRepository->getOwnerCompanies(auth()->id());
@@ -96,6 +104,10 @@ class LotController extends Controller
     }
 
 
+    /**
+     * @throws BidAcceptedException
+     * @throws LotException
+     */
     public function update(LotUpdateRequest $request, Lot $lot)
     {
         if (Gate::denies('company_owner', $lot->user_id)) {
@@ -103,11 +115,11 @@ class LotController extends Controller
         }
 
         if ($lot->accepted_bid_id) {
-            return redirect(route('lot.index'))->with('error', 'Редактирование запрещено, т.к. есть принятая ставка');
+            throw new BidAcceptedException('Редактирование запрещено, т.к. есть принятая ставка');
         }
 
         if (!$this->lotService->edit($lot->id, $request->getDto())) {
-            return redirect()->back()->with('error','Ошибка при редактировании');
+            throw new LotException('Ошибка при редактировании');
         }
 
         return redirect(route('lot.index'))->with('success', 'Лот изменен');
@@ -121,7 +133,7 @@ class LotController extends Controller
         }
 
         if ($lot->accepted_bid_id) {
-            return redirect(route('lot.index'))->with('error', 'Удаление запрещено, т.к. есть принятая ставка');
+            throw new BidAcceptedException('Удаление запрещено, т.к. есть принятая ставка');
         }
 
         return $lot->delete();
@@ -137,7 +149,7 @@ class LotController extends Controller
         $max_bid = $this->bidRepository->getMaxBidByLot($lot);
 
         if (!$this->lotService->acceptBid($lot->id, $max_bid->id)) {
-            return redirect()->back()->with('error','Ошибка при принятии ставки');
+            throw new BidException('Ошибка при принятии ставки');
         }
 
         return response()->json(['success' => "Ставка принята, лот закрыт"]);
