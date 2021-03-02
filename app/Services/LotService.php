@@ -4,12 +4,12 @@
 namespace App\Services;
 
 
-use App\Http\Requests\DTO\LotCreateDto;
+use App\Http\Requests\DTO\LotDto;
 use App\Models\Lot;
 
 class LotService
 {
-    public function create(LotCreateDto $request): bool
+    public function create(LotDto $request): bool
     {
         $lot = new Lot();
         $lot->company_id = $request->getCompanyId();
@@ -23,6 +23,26 @@ class LotService
         if (!$lot->save()) {
             return false;
         }
+
+        return true;
+    }
+
+    public function edit(int $lot_id, LotDto $request): bool
+    {
+        $lot = Lot::find($lot_id);
+
+        if (!$lot) {
+            return false;
+        }
+
+        $lot->update([
+            'company_id' => $request->getCompanyId(),
+            'operation_type' => $request->getOperationType(),
+            'nomenclature' => $request->getNomenclature(),
+            'NDS' => $request->getNDS(),
+            'sum' => $request->getSum(),
+            'fee' => $request->getFee(),
+        ]);
 
         return true;
     }

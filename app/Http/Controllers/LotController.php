@@ -106,16 +106,9 @@ class LotController extends Controller
             return redirect(route('lot.index'))->with('error', 'Редактирование запрещено, т.к. есть принятая ставка');
         }
 
-
-
-        $lot->update([
-            'company_id' => $request->company_id,
-            'operation_type' => $request->operation_type,
-            'nomenclature' => $request->nomenclature,
-            'NDS' => $request->NDS,
-            'sum' => $request->sum,
-            'fee' => $request->fee,
-        ]);
+        if (!$this->lotService->edit($lot->id, $request->getDto())) {
+            return redirect()->back()->with('error','Ошибка при редактировании');
+        }
 
         return redirect(route('lot.index'))->with('success', 'Лот изменен');
     }

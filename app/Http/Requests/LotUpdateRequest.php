@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\DTO\LotDto;
 use App\Models\Lot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -33,5 +34,17 @@ class LotUpdateRequest extends FormRequest
             'sum' => 'required|numeric',
             'fee' => 'required|numeric|between: 2,99',
         ];
+    }
+
+    public function getDto(): LotDto
+    {
+        return new LotDto(
+            $this->get('company_id'),
+            $this->get('operation_type'),
+            $this->get('nomenclature'),
+            $this->get('NDS'),
+            $this->get('sum'),
+            $this->get('fee')
+        );
     }
 }

@@ -4,7 +4,7 @@
 namespace App\Http\Requests\DTO;
 
 
-class LotCreateDto
+class LotDto
 {
     private int $company_id;
     private int $operation_type;

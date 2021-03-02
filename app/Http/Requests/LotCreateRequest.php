@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\DTO\LotCreateDto;
+use App\Http\Requests\DTO\LotDto;
 use App\Models\Lot;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -36,9 +36,9 @@ class LotCreateRequest extends FormRequest
         ];
     }
 
-    public function getDTO(): LotCreateDto
+    public function getDTO(): LotDto
     {
-        return new LotCreateDto(
+        return new LotDto(
             $this->get('company_id'),
             $this->get('operation_type'),
             $this->get('nomenclature'),
